@@ -16,12 +16,9 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 async def authenticate_user(username: str, password: str, session: DepSession):
-    # check = session.query(User).filter(User.username == user.username).first()
     query = select(User).filter(User.username == username)
     result = await session.execute(query)
     user = result.scalar_one_or_none()
-    # query = result.filter(User.username == user.username)
-    # check = query.first()
 
     if not user:
         return False
@@ -81,6 +78,6 @@ async def create_user(user: UserValidation, session: DepSession):
 
 @router.get('/')
 async def user(user: CurrentUser):
-    # if user is None:
-    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Authentication Failed')
     return {"User": user}
